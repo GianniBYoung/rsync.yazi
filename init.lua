@@ -1,5 +1,4 @@
--- maybe have the default dest value prefilled with the file name
--- take in password (securely?)
+-- function borrowed from chmod.yazi plugin
 local selected_or_hovered = ya.sync(function()
 	local tab = cx.active
 	local paths = {}
@@ -25,7 +24,7 @@ return {
 
 		local files = selected_or_hovered()
 		if #files == 0 then
-			return ya.notify { title = "Rsync", content = "No files selected", level = "warn", timeout = 5 }
+			return ya.notify { title = "Rsync", content = "No files selected", level = "warn", timeout = 3 }
 		end
 
 		local default_dest = ""
