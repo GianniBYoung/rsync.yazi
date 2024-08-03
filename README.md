@@ -21,18 +21,13 @@ run  = "plugin rsync"
 desc = "Copy files using rsync"
 ```
 
-### Advanced Usage (wip)
-
-The following flags are available for use:
-
-- `--rsync-args` supply standard rsync flags
-- `--default-destination` set a default remote target (user can optionally be included)
+### Specify Default Remote Server
 
 ```toml
 [[manager.prepend_keymap]]
 on   = "R"
-run  = "plugin rsync --rsync-args '--no-motd' --default-destination 'user@server.com'"
-desc = "Advanced Copy files using rsync"
+run  = "plugin rsync --args='user@server.com'"
+desc = "Copy files using rsync to default location"
 ```
 
 ## Troubleshooting
