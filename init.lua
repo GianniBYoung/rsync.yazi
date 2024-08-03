@@ -1,5 +1,3 @@
--- next steps could be to take user flags as in arg
--- arg to specify default remote server.
 -- maybe have the default dest value prefilled with the file name
 -- take in password (securely?)
 local selected_or_hovered = ya.sync(function()
@@ -21,21 +19,25 @@ local selected_or_hovered = ya.sync(function()
 end)
 
 return {
-	entry = function()
-		-- escape out of visual mode - idk why?
+	entry = function(_, args)
 		ya.manager_emit("escape", { visual = true })
+		local remote_target = #args >= 1 and args[1] or nil
 
 		local files = selected_or_hovered()
 		if #files == 0 then
 			return ya.notify { title = "Rsync", content = "No files selected", level = "warn", timeout = 5 }
 		end
 
-		-- if #files == 1 and <arg for default server> then
-		-- 	local default_dest = arg..":"..cx.active.current.hovered.url
-		-- end
+		local default_dest = ""
+		if #files == 1 and remote_target ~= "" then
+			local base_name = files[1]:match("([^/]+)$")
+			default_dest = remote_target .. ":" .. base_name
+			ya.err { default_dest = default_dest }
+		end
 
 		local dest, ok = ya.input {
 			title = "Rsync - [user]@[remote]:<destination>",
+			value = default_dest or nil,
 			position = { "top-center", y = 3, w = 45 },
 		}
 		if ok ~= 1 then
@@ -57,8 +59,9 @@ return {
 			stderr = stderr,
 			stdout = stdout,
 			err = err,
-			child_res = cmd.status.success,
-			child_return_code = return_code,
+			res = cmd.status.success,
+			return_code = return_code,
+			default_dest = default_dest,
 		}
 
 		if return_code ~= 0 then
