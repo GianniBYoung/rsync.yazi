@@ -2,6 +2,9 @@
 
 A [yazi](https://yazi-rs.github.io/) plugin for simple rsync copying locally and up to remote servers.
 
+![Demo](assets/demo.gif)
+Thanks to [chrissabug](https://x.com/chrissabug) for creating lovely art!
+
 ## Pre-reqs
 
 1. yazi 3.0+
@@ -39,6 +42,8 @@ desc = "Copy files using rsync to default location"
 ## Troubleshooting
 
 Basic logging information is sent to `~/.local/state/yazi/yazi.log`
+
+*Note: This plugin has only been tested on linux
 
 ## Contributing
 
