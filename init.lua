@@ -2,7 +2,6 @@
 -- arg to specify default remote server.
 -- maybe have the default dest value prefilled with the file name
 -- take in password (securely?)
--- maybe take a look at `wait_with_output` to notify on completion
 local selected_or_hovered = ya.sync(function()
 	local tab = cx.active
 	local paths = {}
@@ -64,10 +63,16 @@ return {
 
 		if return_code ~= 0 then
 			ya.notify {
-				title = "Rsync plugin",
+				title = "Rsync Plugin",
 				content = string.format("stderr below, exit code %s\n\n%s", cmd.status.code, stderr),
 				level = "error",
 				timeout = 10,
+			}
+		else
+			ya.notify {
+				title = "Rsync Plugin",
+				content = "Rsync Completed!",
+				timeout = 3,
 			}
 		end
 	end,
