@@ -28,7 +28,7 @@ return {
 		end
 
 		local default_dest = ""
-		if #files == 1 and remote_target ~= "" then
+		if #files == 1 and remote_target ~= nil then
 			local base_name = files[1]:match("([^/]+)$")
 			default_dest = remote_target .. ":" .. base_name
 			ya.err { default_dest = default_dest }
