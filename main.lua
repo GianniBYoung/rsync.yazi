@@ -17,6 +17,33 @@ local selected_or_hovered = ya.sync(function()
 	return paths
 end)
 
+-- Helper function to expand tilde (~) in a path
+local function expand_tilde(path)
+    if not path then return nil end
+
+    if path:sub(1, 1) == '~' then
+        local home = os.getenv("HOME") -- Get HOME environment variable
+		if not home then
+            -- Fallback for Windows-specific environment variables
+            home = os.getenv("USERPROFILE") -- Primary user profile directory on Windows
+        end
+        if home then
+            return home .. path:sub(2) -- Concatenate home path with the rest of the path
+        else
+            -- Fallback if HOME is not set
+            ya.notify {
+                title = "Rsync Plugin",
+                content = "Could not expand '~': HOME environment variable not set.",
+                level = "warn",
+                timeout = 5
+            }
+            return path -- Return original path if home cannot be determined
+        end
+    end
+    return path -- Return original path if no tilde
+end
+
+
 return {
 	entry = function(_, args)
 		ya.manager_emit("escape", { visual = true })
@@ -43,10 +70,16 @@ return {
 			return
 		end
 
+        -- Only expand tilde if it's a local path (doesn't contain ':')
+        if not dest:match(":") then
+            dest = expand_tilde(dest)
+            if not dest then return end -- If expand_tilde failed and returned nil
+        end
+
 		-- local cmd, err = Command("rsync"):args(files):arg(dest):stderr(Command.PIPED):output()
 		local cmd, err = Command("rsync")
-			:args({ "-ahP", "--no-motd" })
-			:args(files)
+			:arg({ "-ahP", "--no-motd" })
+			:arg(files)
 			:arg(dest)
 			:stdout(Command.PIPED)
 			:stderr(Command.PIPED)
